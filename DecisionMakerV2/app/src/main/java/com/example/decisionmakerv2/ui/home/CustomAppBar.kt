@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.decisionmakerv2.ui.theme.app_bar_green
 import com.example.decisionmakerv2.ui.theme.md_theme_dark_primary
 import com.example.decisionmakerv2.ui.theme.workSansFamily
@@ -43,6 +44,7 @@ fun CustomAppBar(){
                 Text(
                     text = "Easy Decision",
                     fontFamily = workSansFamily,
+                    fontSize = 30.sp,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             },
