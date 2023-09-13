@@ -1,5 +1,7 @@
 package com.example.decisionmakerv2.viewmodel
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.decisionmakerv2.data.repository.NoteRepository
 import com.example.decisionmakerv2.model.NoteEntity
@@ -12,9 +14,15 @@ import javax.inject.Inject
 
 interface HomeViewModelAbstract{
     val noteListFlow: Flow<List<NoteEntity>>
+
     fun addNote(note: NoteEntity)
-    fun chooseNote(note: NoteEntity)
+
+    suspend fun chooseNote()
+
+    suspend fun deleteAll()
+
     fun deleteNote(note: NoteEntity)
+
 }
 
 @HiltViewModel
@@ -24,11 +32,21 @@ class HomeViewModel
 ): ViewModel(), HomeViewModelAbstract {
     private val ioScope = CoroutineScope(Dispatchers.IO)
 
+    private val _chosenNote = mutableStateOf<String?>(null)
+    val chosenNote: State<String?> = _chosenNote
+
     override val noteListFlow: Flow<List<NoteEntity>> = noteRepository.getAllFlow()
 
     override fun addNote(note: NoteEntity) {ioScope.launch { noteRepository.insert(note = note) }}
 
-    override fun chooseNote(note: NoteEntity) {ioScope.launch { noteRepository.insert(note = note) }}
+    override suspend fun chooseNote() {
+        val selectedNote = noteRepository.chooseNote()
+        _chosenNote.value = selectedNote
+    }
+
+    override suspend fun deleteAll() {
+        ioScope.launch { noteRepository.deleteAll() }
+    }
 
     override fun deleteNote(note: NoteEntity) {ioScope.launch { noteRepository.delete(note = note) }}
 

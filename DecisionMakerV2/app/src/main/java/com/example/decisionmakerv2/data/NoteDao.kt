@@ -2,10 +2,8 @@ package com.example.decisionmakerv2.data
 
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.DeleteTable
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
 import com.example.decisionmakerv2.model.NoteEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -18,10 +16,13 @@ interface NoteDao {
     @Insert
     suspend fun insert(note: NoteEntity)
 
-    @Update
-    suspend fun choose(note: NoteEntity)
+    @Query("SELECT text FROM note ORDER BY RANDOM() LIMIT 1")
+    suspend fun chooseNote(): String?
 
     @Delete
     suspend fun delete(note: NoteEntity)
+
+    @Query("DELETE FROM note")
+    suspend fun deleteAll()
 
 }

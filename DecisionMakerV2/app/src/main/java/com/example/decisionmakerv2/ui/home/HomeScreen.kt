@@ -17,9 +17,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -44,17 +44,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.decisionmakerv2.model.NoteEntity
-import com.example.decisionmakerv2.viewmodel.HomeViewModelAbstract
+import com.example.decisionmakerv2.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModelAbstract
+    homeViewModel: HomeViewModel
 ){
     val noteListState = homeViewModel.noteListFlow.collectAsState(initial = listOf())
     val coroutineScope = rememberCoroutineScope()
@@ -93,8 +94,7 @@ fun HomeScreen(
                 shape = RoundedCornerShape(15.dp),
                 onClick = {
                     if (enteredValue.isNotBlank()){
-                    homeViewModel.addNote(NoteEntity(text = enteredValue))
-                        enteredValue = ""
+                        homeViewModel.addNote(NoteEntity(text = enteredValue))
                 } else{
                     coroutineScope.launch {
                         Toast.makeText(context,"Enter value cannot be empty!",Toast.LENGTH_LONG).show()
@@ -138,8 +138,9 @@ fun HomeScreen(
                                 onClick = { homeViewModel.deleteNote(note) },
                                 modifier = Modifier.size(30.dp)) {
                                 Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = "delete")
+                                    imageVector = Icons.Outlined.Delete,
+                                    contentDescription = "delete",
+                                    tint = Color.Red)
                             }
                         }
                     }
@@ -169,9 +170,11 @@ fun HomeScreen(
                         )
                     }
                     Text(
-                        text = "Randomly selected value",
-                        fontSize = 15.sp,
-                        modifier = Modifier.padding(start = 15.dp)
+                        text = homeViewModel.chosenNote.value ?: "",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(horizontal = 15.dp)
                     )
                 }
         }
@@ -180,33 +183,40 @@ fun HomeScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val note = noteListState.value
-            //Clear Button
-            Button(
-                modifier = Modifier.height(55.dp),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 0.dp,
-                    pressedElevation = 6.dp,
-                    disabledElevation = 0.dp),
-                shape = RoundedCornerShape(15.dp),
-                onClick = {
-                    Toast.makeText(context, "Does not work yet!", Toast.LENGTH_LONG).show()
-                }) {
-                Text(text = "CLEAR LIST")
-            }
-            //Choose Button
-            Button(
-                modifier = Modifier.height(55.dp),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 0.dp,
-                    pressedElevation = 6.dp,
-                    disabledElevation = 0.dp),
-                shape = RoundedCornerShape(15.dp),
-                onClick = {
-                    Toast.makeText(context, "Does not work yet!", Toast.LENGTH_LONG).show()
-                }) {
-                Text(text = "CHOOSE")
-            }
+                //Clear Button
+                Button(
+                    modifier = Modifier.height(55.dp),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 0.dp,
+                        pressedElevation = 6.dp,
+                        disabledElevation = 0.dp
+                    ),
+                    shape = RoundedCornerShape(15.dp),
+                    onClick = {
+                        coroutineScope.launch { homeViewModel.deleteAll() }
+                    }) {
+                    Text(text = "CLEAR LIST")
+                }
+                //Choose Button
+                Button(
+                    modifier = Modifier.height(55.dp),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 0.dp,
+                        pressedElevation = 6.dp,
+                        disabledElevation = 0.dp
+                    ),
+                    shape = RoundedCornerShape(15.dp),
+                    onClick = {
+                        coroutineScope.launch {
+                            if (noteListState.value.isEmpty()){
+                                homeViewModel.chosenNote.value ?: ""
+                                Toast.makeText(context, "List is Empty", Toast.LENGTH_LONG).show()
+                            } else { homeViewModel.chooseNote() }
+                        }
+                    }
+                ) {
+                    Text(text = "CHOOSE")
+                }
         }
     }
 }
@@ -225,6 +235,16 @@ fun InputValue(text: String,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
         ),
+        trailingIcon = {
+            when {
+            txtState.value.isNotEmpty() -> IconButton(onClick = { txtState.value = "" })
+                {
+                    Icon(Icons.Default.Clear,
+                        contentDescription = "clear text",
+                    )
+                }
+            }
+        },
         shape = RoundedCornerShape(15.dp),
         singleLine = true,
         onValueChange = { txt ->
