@@ -1,6 +1,6 @@
 package com.example.decisionmakerv2.viewmodel
 
-import androidx.compose.runtime.State
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.decisionmakerv2.data.repository.NoteRepository
@@ -23,6 +23,8 @@ interface HomeViewModelAbstract{
 
     fun deleteNote(note: NoteEntity)
 
+    fun onInputValueChange()
+
 }
 
 @HiltViewModel
@@ -33,7 +35,9 @@ class HomeViewModel
     private val ioScope = CoroutineScope(Dispatchers.IO)
 
     private val _chosenNote = mutableStateOf<String?>(null)
-    val chosenNote: State<String?> = _chosenNote
+    var chosenNote: MutableState<String?> = _chosenNote
+
+    var inputValue: String = ""
 
     override val noteListFlow: Flow<List<NoteEntity>> = noteRepository.getAllFlow()
 
@@ -48,6 +52,12 @@ class HomeViewModel
         ioScope.launch { noteRepository.deleteAll() }
     }
 
-    override fun deleteNote(note: NoteEntity) {ioScope.launch { noteRepository.delete(note = note) }}
+    override fun deleteNote(note: NoteEntity) {
+        ioScope.launch { noteRepository.delete(note = note) }
+    }
+
+    override fun onInputValueChange() {
+        inputValue = ""
+    }
 
 }

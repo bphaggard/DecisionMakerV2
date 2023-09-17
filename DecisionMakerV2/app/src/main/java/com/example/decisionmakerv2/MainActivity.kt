@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         val homeViewModel: HomeViewModel by viewModels()
 
         setContent {
-            DecisionMakerV2Theme {
+            DecisionMakerV2Theme() {
                 HomeScreen(homeViewModel)
             }
         }

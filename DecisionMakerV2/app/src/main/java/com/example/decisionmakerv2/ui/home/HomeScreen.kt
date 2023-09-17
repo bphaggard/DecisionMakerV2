@@ -28,6 +28,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -38,7 +39,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -193,7 +193,9 @@ fun HomeScreen(
                     ),
                     shape = RoundedCornerShape(15.dp),
                     onClick = {
-                        coroutineScope.launch { homeViewModel.deleteAll() }
+                        coroutineScope.launch {
+                            homeViewModel.deleteAll()
+                            homeViewModel.chosenNote.value = ""}
                     }) {
                     Text(text = "CLEAR LIST")
                 }
@@ -223,11 +225,11 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InputValue(text: String,
-               onValueChange: (String) -> Unit) {
-    val txtState = rememberSaveable { mutableStateOf(text) }
+fun InputValue(text: String, onValueChange: (String) -> Unit) {
+    var inputValue by remember { mutableStateOf(text) }
+
     TextField(
-        value = txtState.value,
+        value = inputValue,
         modifier = Modifier.fillMaxWidth(0.7f),
         placeholder = { Text("Enter value") },
         colors = TextFieldDefaults.textFieldColors(
@@ -237,19 +239,22 @@ fun InputValue(text: String,
         ),
         trailingIcon = {
             when {
-            txtState.value.isNotEmpty() -> IconButton(onClick = { txtState.value = "" })
-                {
-                    Icon(Icons.Default.Clear,
-                        contentDescription = "clear text",
-                    )
+                inputValue.isNotEmpty() -> IconButton(
+                    onClick = {
+                        inputValue = ""
+                        onValueChange("") // Clear the value in the onValueChange callback
+                    }
+                ) {
+                    Icon(Icons.Default.Clear, contentDescription = "clear text")
                 }
             }
         },
         shape = RoundedCornerShape(15.dp),
         singleLine = true,
-        onValueChange = { txt ->
-            txtState.value = txt
-            onValueChange(txt)
+        onValueChange = { newInputValue ->
+            inputValue = newInputValue
+            // Update the value in the onValueChange callback
+            onValueChange(newInputValue)
         }
     )
 }

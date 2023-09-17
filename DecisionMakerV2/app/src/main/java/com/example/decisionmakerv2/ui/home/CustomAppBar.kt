@@ -1,9 +1,9 @@
 package com.example.decisionmakerv2.ui.home
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DropdownMenu
@@ -21,18 +21,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.decisionmakerv2.ui.theme.app_bar_green
-import com.example.decisionmakerv2.ui.theme.md_theme_dark_primary
 import com.example.decisionmakerv2.ui.theme.workSansFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomAppBar(){
+fun CustomAppBar() {
+
     Box(
         modifier = Modifier
             .height(60.dp)
@@ -48,52 +47,56 @@ fun CustomAppBar(){
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             },
-            actions = {
-                AppBarActions()
-            }
+//            actions = {
+//                AppBarActions()
+//            }
         )
     }
 }
 
-@Composable
-fun AppBarActions(){
-    ChangeColor()
-}
+//@Composable
+//fun AppBarActions(){
+//    ChangeColor()
+//}
 
-@Composable
-fun ChangeColor(){
-    var shoeMenu by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    IconButton(
-        onClick = { shoeMenu = !shoeMenu }
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Menu,
-            contentDescription = "Menu Icon",
-            tint = MaterialTheme.colorScheme.onPrimary
-        )
-        DropdownMenu(
-            expanded = shoeMenu,
-            onDismissRequest = { shoeMenu = false }
-        ) {
-            DropdownMenuItem(
-                text = { Text(text = "Red") },
-                onClick = { Toast.makeText(context, "Red Color", Toast.LENGTH_SHORT).show() })
-
-            DropdownMenuItem(
-                text = { Text(text = "Green") },
-                onClick = { Toast.makeText(context, "Green Color", Toast.LENGTH_SHORT).show() })
-
-            DropdownMenuItem(
-                text = { Text(text = "Blue") },
-                onClick = { Toast.makeText(context, "Blue Color", Toast.LENGTH_SHORT).show() })
-
-            DropdownMenuItem(
-                text = { Text(text = "Purple") },
-                onClick = { Toast.makeText(context, "Purple Color", Toast.LENGTH_SHORT).show() })
-        }
-    }
-}
+//@Composable
+//fun ChangeColor(){
+//    var shoeMenu by remember { mutableStateOf(false) }
+//    val context = LocalContext.current
+//
+//    IconButton(
+//        onClick = { shoeMenu = !shoeMenu }
+//    ) {
+//        Icon(
+//            imageVector = Icons.Filled.Menu,
+//            contentDescription = "Menu Icon",
+//            tint = MaterialTheme.colorScheme.onPrimary
+//        )
+//        DropdownMenu(
+//            expanded = shoeMenu,
+//            onDismissRequest = { shoeMenu = false }
+//        ) {
+//            Text(
+//                modifier = Modifier.padding(horizontal = 10.dp),
+//                text = "Theme switcher",
+//                fontWeight = FontWeight.Bold,
+//                fontSize = 15.sp)
+//
+//            DropdownMenuItem(
+//                text = { Text(text = "Light") },
+//                onClick = {  })
+//
+//            DropdownMenuItem(
+//                text = { Text(text = "Dark") },
+//                onClick = {  })
+//
+//            DropdownMenuItem(
+//                text = { Text(text = "System") },
+//                onClick = {  })
+//
+//        }
+//    }
+//}
 
 @Preview
 @Composable

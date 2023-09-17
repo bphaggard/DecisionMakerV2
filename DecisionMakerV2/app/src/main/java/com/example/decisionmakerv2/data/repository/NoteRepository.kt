@@ -11,7 +11,6 @@ class NoteRepository(
     suspend fun insert(note: NoteEntity) = noteDao.insert(note = note)
     suspend fun chooseNote(): String? = noteDao.chooseNote()
     suspend fun delete(note: NoteEntity) = noteDao.delete(note = note)
-
     suspend fun deleteAll() = noteDao.deleteAll()
 
 }
