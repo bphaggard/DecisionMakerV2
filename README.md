@@ -1,3 +1,4 @@
+# Easy Decision
 New version of previous app Decision Maker. This version is made with Jetpack Compose and Room library.
 Theme colors are set for light and dark mode.
 
